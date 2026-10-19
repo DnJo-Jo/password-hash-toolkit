@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Password / Hash Toolkit</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <header class="site-header">
+    <h1>Password &amp; Hash Toolkit</h1>
+    <p class="tagline">Strength analysis · crack-time estimates · secure hashing — all in your browser session.</p>
+  </header>
+
+  <main>
+    <!-- Strength + crack-time -->
+    <section class="card">
+      <h2>1 · Analyze a password</h2>
+      <p class="muted">Nothing is stored or logged. Analysis runs in-memory on the server.</p>
+      <div class="field">
+        <input type="password" id="analyze-input" placeholder="Type a password to test…" autocomplete="off" />
+        <label class="checkbox"><input type="checkbox" id="toggle-reveal" /> show</label>
+      </div>
+
+      <div id="analyze-result" class="result hidden">
+        <div class="meter">
+          <div id="meter-bar" class="meter-bar"></div>
+        </div>
+        <p class="score-line">
+          <strong id="score-label">—</strong>
+          <span class="muted" id="entropy-line"></span>
+        </p>
+        <ul id="warnings" class="warnings"></ul>
+        <ul id="suggestions" class="suggestions"></ul>
+
+        <h3>Estimated time to brute-force</h3>
+        <table class="crack-table">
+          <thead>
+            <tr><th>Attacker scenario</th><th>Time (average)</th></tr>
+          </thead>
+          <tbody id="crack-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Hashing -->
+    <section class="card">
+      <h2>2 · Hash text</h2>
+      <div class="field">
+        <input type="text" id="hash-input" placeholder="Text to hash…" autocomplete="off" />
+      </div>
+      <div class="field row">
+        <label><input type="radio" name="hash-mode" value="pbkdf2" checked /> PBKDF2 (password storage)</label>
+        <label><input type="radio" name="hash-mode" value="digest" /> Plain digest</label>
+        <select id="digest-algo" disabled>
+          {% for algo in algorithms %}
+          <option value="{{ algo }}" {% if algo == 'sha256' %}selected{% endif %}>{{ algo }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button id="hash-btn">Compute hash</button>
+      <pre id="hash-output" class="output hidden"></pre>
+    </section>
+
+    <!-- Verify -->
+    <section class="card">
+      <h2>3 · Verify a stored hash</h2>
+      <div class="field">
+        <input type="text" id="verify-password" placeholder="Password…" autocomplete="off" />
+      </div>
+      <div class="field">
+        <input type="text" id="verify-stored" placeholder="pbkdf2_sha256$310000$…$…" autocomplete="off" />
+      </div>
+      <button id="verify-btn">Verify</button>
+      <p id="verify-output" class="output-inline hidden"></p>
+    </section>
+  </main>
+
+  <footer>
+    <p class="muted">Educational / defensive-security tool. Test only passwords you own.</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
